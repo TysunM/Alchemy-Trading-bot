@@ -1,0 +1,202 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8" />
+  <script src="https://cdn.plot.ly/plotly-2.35.2.min.js"></script>
+  <style>
+    body { margin: 0; padding: 0; background: transparent; overflow: hidden; }
+    #chart { width: 100%; }
+    .capture-bar {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding: 6px 8px;
+      background: #0f1729;
+      border-top: 1px solid #1a2540;
+      font-family: monospace;
+      font-size: 12px;
+      color: #94a3b8;
+    }
+    .capture-bar .count {
+      color: #22d3ee;
+      font-weight: bold;
+    }
+    .capture-bar button {
+      background: #22d3ee;
+      color: #0a0e1a;
+      border: none;
+      border-radius: 4px;
+      padding: 4px 12px;
+      font-family: monospace;
+      font-size: 12px;
+      cursor: pointer;
+      font-weight: bold;
+    }
+    .capture-bar button:hover { background: #06b6d4; }
+    .capture-bar button.clear {
+      background: #334155;
+      color: #94a3b8;
+    }
+  </style>
+</head>
+<body>
+  <div id="chart"></div>
+  <div id="capture-bar" class="capture-bar" style="display:none;">
+    <span>Drawn lines: <span id="line-count" class="count">0</span></span>
+    <span id="price-list"></span>
+    <button id="save-btn" onclick="saveShapes()">Save to Annotations</button>
+    <button class="clear" onclick="clearCapture()">Clear</button>
+  </div>
+
+  <script>
+    const STREAMLIT_COMPONENT_READY = "streamlit:componentReady";
+    const STREAMLIT_SET_VALUE = "streamlit:setComponentValue";
+    const STREAMLIT_RENDER = "streamlit:render";
+    const STREAMLIT_SET_HEIGHT = "streamlit:setFrameHeight";
+
+    let drawnPrices = [];
+    let knownShapeCount = 0;
+
+    function sendValue(value) {
+      window.parent.postMessage({ type: STREAMLIT_SET_VALUE, value: value }, "*");
+    }
+
+    function setHeight(height) {
+      window.parent.postMessage({ type: STREAMLIT_SET_HEIGHT, height: height }, "*");
+    }
+
+    function isHorizontalLine(y0, y1) {
+      var v0 = parseFloat(y0);
+      var v1 = parseFloat(y1);
+      if (isNaN(v0) || isNaN(v1)) return null;
+      var tolerance = 0.01 * Math.max(Math.abs(v0), 1);
+      if (Math.abs(v0 - v1) <= tolerance) {
+        return Math.round(((v0 + v1) / 2) * 100) / 100;
+      }
+      return null;
+    }
+
+    function addPrice(price) {
+      if (drawnPrices.indexOf(price) === -1) {
+        drawnPrices.push(price);
+      }
+    }
+
+    function extractHorizontalLines(relayoutData) {
+      if (!relayoutData) return;
+
+      if (Array.isArray(relayoutData.shapes)) {
+        for (var i = 0; i < relayoutData.shapes.length; i++) {
+          var shape = relayoutData.shapes[i];
+          if (shape.type === "line" && shape.y0 !== undefined && shape.y1 !== undefined) {
+            var price = isHorizontalLine(shape.y0, shape.y1);
+            if (price !== null) addPrice(price);
+          }
+        }
+        return;
+      }
+
+      var shapeUpdates = {};
+      var keys = Object.keys(relayoutData);
+      for (var k = 0; k < keys.length; k++) {
+        var key = keys[k];
+        var match = key.match(/^shapes\[(\d+)\]\.(.+)$/);
+        if (match) {
+          var idx = match[1];
+          var prop = match[2];
+          if (!shapeUpdates[idx]) shapeUpdates[idx] = {};
+          shapeUpdates[idx][prop] = relayoutData[key];
+        }
+      }
+
+      var indices = Object.keys(shapeUpdates);
+      for (var j = 0; j < indices.length; j++) {
+        var update = shapeUpdates[indices[j]];
+        if (update.y0 !== undefined && update.y1 !== undefined) {
+          var price = isHorizontalLine(update.y0, update.y1);
+          if (price !== null) addPrice(price);
+        }
+      }
+    }
+
+    function scanNewShapes(gd) {
+      if (!gd || !gd.layout || !gd.layout.shapes) return;
+      var shapes = gd.layout.shapes;
+      for (var i = knownShapeCount; i < shapes.length; i++) {
+        var shape = shapes[i];
+        if (shape.type === "line" && shape.y0 !== undefined && shape.y1 !== undefined) {
+          var price = isHorizontalLine(shape.y0, shape.y1);
+          if (price !== null) addPrice(price);
+        }
+      }
+      knownShapeCount = shapes.length;
+    }
+
+    function updateCaptureBar() {
+      var bar = document.getElementById("capture-bar");
+      var countEl = document.getElementById("line-count");
+      var priceList = document.getElementById("price-list");
+
+      if (drawnPrices.length > 0) {
+        bar.style.display = "flex";
+        countEl.textContent = drawnPrices.length;
+        priceList.textContent = drawnPrices.map(function(p) { return "$" + p.toFixed(2); }).join(", ");
+      } else {
+        bar.style.display = "none";
+      }
+    }
+
+    function saveShapes() {
+      if (drawnPrices.length > 0) {
+        sendValue({ action: "save", prices: drawnPrices.slice() });
+        drawnPrices = [];
+        updateCaptureBar();
+      }
+    }
+
+    function clearCapture() {
+      drawnPrices = [];
+      updateCaptureBar();
+      sendValue({ action: "clear" });
+    }
+
+    function onRender(event) {
+      var data = event.detail;
+      if (!data || !data.args) return;
+
+      var figData = data.args.figure_data || [];
+      var figLayout = data.args.figure_layout || {};
+      var figConfig = data.args.config || {};
+
+      var chartDiv = document.getElementById("chart");
+
+      knownShapeCount = (figLayout.shapes || []).length;
+
+      Plotly.react(chartDiv, figData, figLayout, figConfig).then(function(gd) {
+        gd.on("plotly_relayout", function(eventData) {
+          extractHorizontalLines(eventData);
+          scanNewShapes(gd);
+          updateCaptureBar();
+          if (drawnPrices.length > 0) {
+            sendValue({ action: "detected", prices: drawnPrices.slice() });
+          }
+        });
+
+        gd.on("plotly_afterplot", function() {
+          setHeight(chartDiv.offsetHeight + 40);
+        });
+
+        setHeight(chartDiv.offsetHeight + 40);
+      });
+    }
+
+    window.addEventListener("message", function(event) {
+      if (event.data.type === STREAMLIT_RENDER) {
+        onRender(event);
+      }
+    });
+
+    window.parent.postMessage({ type: STREAMLIT_COMPONENT_READY }, "*");
+  </script>
+</body>
+</html>

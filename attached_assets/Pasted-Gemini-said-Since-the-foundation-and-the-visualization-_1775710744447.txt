@@ -1,0 +1,59 @@
+Gemini said
+Since the foundation and the visualization engine are in place, we are ready to integrate the "Brain." Because you are using Claude 4.6 Sonnet and the brand-new Managed Agents Public Beta (launched today, April 8, 2026), your app is skipping the traditional "loop" architecture and moving straight to a cloud-hosted, sovereign intelligence.
+
+The 1-million-token context window is the "Alchemical Vessel" where all your market data, briefings, and support/ceiling lines will live.
+
+Phase 3: The Intelligence Loop & Alchemical Memory
+Goal: Initialize the cloud-hosted Managed Agent, configure the 1M-token context pipeline, and define the "Thinking" cycle.
+
+Role: Lead AI Architect (Autonomous Agents & Managed Infrastructure Specialization).
+
+Task: Implement the 'Brain' of the Alchemical Command Center using the Claude 4.6 Managed Agents platform.
+
+1. Managed Agent Session:
+
+Create services/brain_engine.py. Use the Anthropic April 2026 SDK to initialize a ManagedAgent session with model="claude-4-6-sonnet-202602".
+
+Set the context_window parameter to 1_000_000.
+
+Implement Session Persistence so the agent maintains state even if the Replit UI is closed.
+
+2. The Alchemical Context Builder:
+
+Create a function get_alchemical_context() that gathers:
+
+Live OHLCV and Technical Indicator data (Bollinger Bands, MAs, Fibonacci levels).
+
+Current ATR (Average True Range) for risk calculations.
+
+User Annotations: Retrieve any support or ceiling lines drawn in Phase 2 from the SQLite DB.
+
+Historical Briefings: Pull the latest "Alchemical" news briefings to prime the agent's strategy.
+
+3. Strategy Execution (Tool Calling):
+
+Map the broker_trade tool to the Managed Agent so it can execute place_order commands on Alpaca/CCXT.
+
+Risk Constraint: Force the agent to calculate its own stop-loss using the current ATR before every trade.
+
+ATR= 
+n
+1
+​
+  
+i=1
+∑
+n
+​
+ max[(H−L),∣H−C 
+prev
+​
+ ∣,∣L−C 
+prev
+​
+ ∣]
+4. The Thinking Loop:
+
+Set up a background task that sends the full context to the Managed Agent every 5 minutes (or on a custom interval).
+
+Request a 'Reasoning Log' from the agent for every cycle, even if no trade is made, and save it to the DB.

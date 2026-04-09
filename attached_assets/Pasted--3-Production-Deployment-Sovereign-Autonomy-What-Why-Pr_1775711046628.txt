@@ -1,0 +1,32 @@
+#3 - Production Deployment & Sovereign Autonomy
+What & Why
+Prepare the Alchemical Trading Command Center for permanent 24/7 live deployment with enhanced safety protocols, mobile-friendly monitoring, dashboard authentication, and a production-grade health check. The operator needs to monitor Claude's brain and adjust ceiling lines from a mobile phone while in the field, and the system needs robust emergency shutdown with push notifications.
+
+Done looks like
+A revamped Ledger tab in the Streamlit dashboard shows a live-scrolling feed of Claude's reasoning entries with gold highlighting for high-conviction setups (≥0.80 confidence) and red highlighting for risk-off/sell decisions. A token meter gauge visualizes usage against the 1M-token context window budget.
+A prominent EMERGENCY STOP button that, when pressed: (1) terminates the managed agent session, (2) flattens all broker positions via liquidate_all(), (3) cancels all open orders, (4) stops all bots, and (5) sends a push notification to the operator's phone via NTFY (or Telegram as fallback). This replaces/upgrades the existing kill switch + liquidate buttons into a single unified emergency action.
+The full Streamlit dashboard is mobile-responsive — sidebar collapses cleanly, charts and metrics stack vertically, tab labels are compact, and the kill switch / emergency stop remain easily tappable on small screens. The operator can view the Ledger and adjust support/ceiling lines from a phone.
+Basic authentication (username/password) gates the entire dashboard. Credentials are read from environment variables (DASH_USER / DASH_PASS). Unauthenticated visitors see a login form instead of the command deck.
+The /health endpoint on port 8099 is enhanced to report the managed agent session status (alive/dead, last heartbeat age, session uptime) alongside the existing database connectivity check, giving the Replit Reserved VM deployment health checker a complete picture of system health.
+pyproject.toml includes the requests dependency (already present) and any new dependency needed for NTFY/Telegram push notifications.
+Out of scope
+OAuth2 or SSO authentication (basic username/password is sufficient for a single-operator deployment).
+CCXT multi-exchange support.
+Changes to the mobile Expo app (this task is about the Streamlit web dashboard being mobile-friendly via CSS).
+Changes to the API server artifact.
+Building the managed agent itself (that's Task #1).
+Tasks
+Dashboard authentication — Add a login gate to the Streamlit app that checks username/password from DASH_USER and DASH_PASS environment variables. Show a login form if not authenticated; store auth state in st.session_state. All dashboard content is hidden behind the auth check.
+Enhanced Ledger tab — Redesign the existing Reasoning Ledger tab (tab5) with a live-scrolling feed. Render high-conviction entries (confidence ≥ 0.80) with a gold background/border, risk-off entries (action=sell or hold with low confidence) in red. Add a token usage gauge that reads the managed agent's current token consumption and displays it as a progress bar against the 1M-token budget.
+EMERGENCY STOP protocol — Replace the separate KILL and LIQUIDATE buttons in the sidebar with a single, high-visibility EMERGENCY STOP button. On click: terminate the managed agent session, call liquidate_all() and cancel_all_orders() on the broker, stop all bots, and fire a push notification via NTFY (HTTP POST to ntfy.sh/<topic>) with the alert details. Read the NTFY topic from a NTFY_TOPIC environment variable. Keep a secondary "Resume" button to re-enable trading after an emergency stop.
+Mobile-responsive layout — Expand the existing @media (max-width: 768px) CSS block to handle: stacking metric columns vertically, making the sidebar auto-collapse friendly, shrinking tab labels, ensuring the emergency stop button is large and tappable, and making charts fill the viewport width. Test that the Ledger tab and manual levels inputs are usable on a phone-sized screen.
+Health check hardening — Enhance healthcheck.py to include managed agent session status (session alive, last heartbeat timestamp, session uptime) in the /health response JSON. Report "status": "degraded" if the managed agent session has not sent a heartbeat in over 10 minutes. This gives the Replit Reserved VM health checker full visibility into both the "Body" (Streamlit + DB) and the "Brain" (managed agent session).
+Relevant files
+app.py:46-93,124-157,272-280,823-843
+healthcheck.py
+pyproject.toml
+trading/utils/config.py
+trading/utils/database.py
+trading/services/broker.py:116-140
+trading/services/agent_loop.py:151-198
+trading/services/risk_manager.py
