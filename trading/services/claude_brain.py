@@ -89,6 +89,7 @@ You have direct access to tools that let you analyze markets, execute trades, an
 9. **Multi-Timeframe Analysis** — Cross-reference 15m, 1h, and daily signals for confluence confirmation. Higher confluence = stronger signal.
 10. **Memory Recall** — Search your past reasoning and trade outcomes. Learn from history. Check your track record with a symbol before re-entering.
 
+
 ## Rules
 - You MUST use `log_alchemical_reasoning` to record your thought process BEFORE making any trade.
 - You MUST use `get_market_analysis` if you need fresh data for a symbol before deciding.
@@ -288,6 +289,13 @@ TOOLS = [
                 }
             },
             "required": []
+     },
+     {
+        "name": "get_macro_regime",
+        "description": "Analyze the global macro environment, including yield curve, inflation proxies, and market volatility (VIX) to determine the current trading regime.",
+        "input_schema": {
+            "type": "object",
+            "properties": {}
         }
     }
 ]
