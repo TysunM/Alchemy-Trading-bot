@@ -1,15 +1,18 @@
 """
-Push Notification Service — NTFY integration for emergency alerts.
+Push Notification Service — ntfy.sh integration for trade alerts.
 
-Sends push notifications to the operator's phone via ntfy.sh.
-Configure with NTFY_TOPIC environment variable.
+Supports authenticated topics (NTFY_USER / NTFY_PASS) for private channels.
+Configure via .env:
+    NTFY_TOPIC=Alchemy-Trading-Dalio
+    NTFY_USER=your_username      (optional — only needed for private topics)
+    NTFY_PASS=your_password      (optional — only needed for private topics)
 """
 
 import threading
 
 import requests
 
-from trading.utils.config import NTFY_TOPIC
+from trading.utils.config import NTFY_PASS, NTFY_TOPIC, NTFY_USER
 from trading.utils.database import log_event
 
 
@@ -20,17 +23,21 @@ def send_emergency_alert(title: str, message: str, priority: str = "urgent"):
 
     def _send():
         try:
-            resp = requests.post(
-                f"https://ntfy.sh/{NTFY_TOPIC}",
+            kwargs = dict(
+                url=f"https://ntfy.sh/{NTFY_TOPIC}",
                 data=message.encode("utf-8"),
                 headers={
-                    "Title": title,
+                    "Title":    title,
                     "Priority": priority,
-                    "Tags": "rotating_light,warning",
+                    "Tags":     "rotating_light,warning",
                 },
                 timeout=10,
             )
-            if resp.status_code == 200:
+            if NTFY_USER and NTFY_PASS:
+                kwargs["auth"] = (NTFY_USER, NTFY_PASS)
+
+            resp = requests.post(**kwargs)
+            if resp.status_code in (200, 201):
                 log_event("notify", f"NTFY alert sent: {title}", "info")
             else:
                 log_event("notify", f"NTFY failed ({resp.status_code}): {resp.text[:100]}", "error")
