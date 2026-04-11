@@ -477,8 +477,11 @@ class PoliticalMirrorService:
 
 
 def _parse_date(date_str: str) -> datetime:
-    if "T" in date_str:
-        dt = datetime.fromisoformat(date_str.replace("Z", "+00:00"))
-    else:
-        dt = datetime.strptime(date_str, "%Y-%m-%d").replace(tzinfo=timezone.utc)
-    return dt if dt.tzinfo else dt.replace(tzinfo=timezone.utc)
+    try:
+        if "T" in date_str:
+            dt = datetime.fromisoformat(date_str.replace("Z", "+00:00"))
+        else:
+            dt = datetime.strptime(date_str, "%Y-%m-%d").replace(tzinfo=timezone.utc)
+        return dt if dt.tzinfo else dt.replace(tzinfo=timezone.utc)
+    except (ValueError, TypeError):
+        return datetime.now(timezone.utc)

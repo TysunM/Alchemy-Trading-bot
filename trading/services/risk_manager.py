@@ -43,6 +43,8 @@ class RiskManager:
             return 0
         risk_dollars = account_equity * self.max_risk_pct * confidence
         stop_distance = atr * self.atr_multiplier
+        if stop_distance <= 0:
+            return 0
         shares = int(risk_dollars / stop_distance)
         return max(1, shares)
 
