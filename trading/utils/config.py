@@ -18,5 +18,6 @@ DEFAULT_SYMBOLS = ["SPY", "QQQ", "AAPL", "TSLA", "NVDA"]
 DASH_USER = os.environ.get("DASH_USER", "")
 DASH_PASS = os.environ.get("DASH_PASS", "")
 NTFY_TOPIC = os.environ.get("NTFY_TOPIC", "")
+NTFY_SERVER = os.environ.get("NTFY_SERVER", "https://ntfy.sh")
 NTFY_USER = os.environ.get("NTFY_USER", "")
 NTFY_PASS = os.environ.get("NTFY_PASS", "")

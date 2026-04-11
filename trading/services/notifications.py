@@ -12,7 +12,7 @@ import threading
 
 import requests
 
-from trading.utils.config import NTFY_PASS, NTFY_TOPIC, NTFY_USER
+from trading.utils.config import NTFY_PASS, NTFY_SERVER, NTFY_TOPIC, NTFY_USER
 from trading.utils.database import log_event
 
 
@@ -24,7 +24,7 @@ def send_emergency_alert(title: str, message: str, priority: str = "urgent"):
     def _send():
         try:
             kwargs = dict(
-                url=f"https://ntfy.sh/{NTFY_TOPIC}",
+                url=f"{NTFY_SERVER}/{NTFY_TOPIC}",
                 data=message.encode("utf-8"),
                 headers={
                     "Title":    title,
