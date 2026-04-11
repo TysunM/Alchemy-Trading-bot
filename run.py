@@ -11,7 +11,7 @@ from trading.utils.database import init_db
 init_db()
 
 proc = subprocess.Popen(
-    [sys.executable, "-m", "streamlit", "run", "app.py", "--server.port", "5000"],
+    [sys.executable, "-m", "streamlit", "run", "app.py", "--server.port", "8501", "--server.address", "127.0.0.1"],
     stdout=sys.stdout,
     stderr=sys.stderr,
 )
