@@ -77,395 +77,288 @@ st.set_page_config(
 
 st.markdown("""<style>
     /* ── GLOBAL ── */
-    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;600&display=swap');
-
-    html, body, [class*="css"] {
-        font-family: 'Inter', sans-serif;
-    }
-    .main { background-color: #060810; }
-    .block-container {
-        padding-top: 0.75rem;
-        padding-bottom: 1rem;
-        max-width: 100% !important;
-    }
+    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap');
+    html, body, [class*="css"] { font-family: 'Inter', sans-serif; }
+    .main, [data-testid="stAppViewContainer"] { background: #030712 !important; }
+    .block-container { padding-top: 0.5rem !important; padding-bottom: 1rem; max-width: 100% !important; }
+    [data-testid="stAppViewBlockContainer"] { background: #030712 !important; }
 
     /* ── SIDEBAR ── */
     [data-testid="stSidebar"] {
-        background: linear-gradient(180deg, #07091a 0%, #0a0d1f 100%);
-        border-right: 1px solid #1a2540;
+        background: linear-gradient(180deg, #0a0f1e 0%, #060c19 100%) !important;
+        border-right: 1px solid #1f2937 !important;
     }
-    [data-testid="stSidebar"] .block-container { padding-top: 0; }
-    [data-testid="stSidebar"] label { color: #94a3b8 !important; font-size: 0.78rem !important; letter-spacing: 0.03em; }
-    [data-testid="stSidebar"] .stMarkdown h2 { color: #e2e8f0; font-size: 1rem !important; }
+    [data-testid="stSidebar"] label { color: #6b7280 !important; font-size: 0.78rem !important; }
     [data-testid="stSidebar"] .stMarkdown h3 {
-        color: #00d4ff;
-        font-size: 0.72rem !important;
-        letter-spacing: 0.12em;
-        text-transform: uppercase;
-        font-weight: 600;
-        margin-top: 0.5rem;
-        margin-bottom: 0.25rem;
+        color: #3b82f6; font-size: 0.68rem !important; letter-spacing: 0.12em;
+        text-transform: uppercase; font-weight: 700; margin: 0.5rem 0 0.3rem;
     }
-    [data-testid="stSidebar"] hr { border-color: #1a2540 !important; margin: 0.6rem 0 !important; }
+    [data-testid="stSidebar"] hr { border-color: #1f2937 !important; margin: 0.5rem 0 !important; }
+    [data-testid="stSidebar"] p { color: #9ca3af !important; font-size: 0.8rem !important; }
 
-    /* ── SIDEBAR BRAND HEADER ── */
+    /* ── SIDEBAR BRAND ── */
     .sidebar-brand {
-        background: linear-gradient(135deg, #0d1535 0%, #0a1628 100%);
-        border-bottom: 1px solid #1e3a5f;
-        padding: 18px 16px 14px;
-        margin: -1rem -1rem 0.75rem;
+        background: linear-gradient(135deg, #0d1b2e 0%, #091220 100%);
+        border-bottom: 1px solid #1f2937;
+        padding: 20px 16px 16px;
+        margin: -1rem -1rem 1rem;
         text-align: center;
     }
-    .sidebar-brand .brand-icon {
-        font-size: 2.2rem;
-        line-height: 1;
-        filter: drop-shadow(0 0 12px rgba(0,212,255,0.6));
-    }
+    .sidebar-brand .brand-icon { font-size: 2.4rem; filter: drop-shadow(0 0 14px rgba(59,130,246,0.7)); }
     .sidebar-brand .brand-name {
-        font-size: 0.85rem;
-        font-weight: 700;
-        letter-spacing: 0.15em;
-        text-transform: uppercase;
-        color: #00d4ff;
-        margin-top: 4px;
+        font-size: 1rem; font-weight: 800; letter-spacing: 0.1em;
+        text-transform: uppercase; color: #3b82f6; margin-top: 6px;
     }
-    .sidebar-brand .brand-sub {
-        font-size: 0.65rem;
-        color: #4a6380;
-        letter-spacing: 0.1em;
-        text-transform: uppercase;
-    }
+    .sidebar-brand .brand-sub { font-size: 0.62rem; color: #374151; letter-spacing: 0.1em; text-transform: uppercase; }
 
     /* ── STATUS BADGE ── */
     .status-online {
         display: inline-flex; align-items: center; gap: 6px;
-        background: rgba(0,255,136,0.08);
-        border: 1px solid rgba(0,255,136,0.25);
-        border-radius: 20px;
-        padding: 4px 12px;
-        font-size: 0.72rem;
-        font-weight: 600;
-        color: #00ff88;
-        letter-spacing: 0.05em;
+        background: rgba(74,222,128,0.08); border: 1px solid rgba(74,222,128,0.25);
+        border-radius: 20px; padding: 4px 14px;
+        font-size: 0.7rem; font-weight: 700; color: #4ade80; letter-spacing: 0.06em;
     }
-    .status-online::before { content: '●'; font-size: 0.5rem; animation: pulse-green 2s infinite; }
+    .status-online::before { content: '●'; font-size: 0.45rem; animation: pulse-g 2s infinite; }
     .status-killed {
         display: inline-flex; align-items: center; gap: 6px;
-        background: rgba(255,51,102,0.1);
-        border: 1px solid rgba(255,51,102,0.35);
-        border-radius: 20px;
-        padding: 4px 12px;
-        font-size: 0.72rem;
-        font-weight: 600;
-        color: #ff3366;
-        letter-spacing: 0.05em;
+        background: rgba(248,113,113,0.08); border: 1px solid rgba(248,113,113,0.3);
+        border-radius: 20px; padding: 4px 14px;
+        font-size: 0.7rem; font-weight: 700; color: #f87171; letter-spacing: 0.06em;
     }
-    @keyframes pulse-green {
-        0%, 100% { opacity: 1; } 50% { opacity: 0.3; }
-    }
+    @keyframes pulse-g { 0%,100%{opacity:1} 50%{opacity:0.25} }
 
-    /* ── EMERGENCY STOP BUTTON ── */
+    /* ── EMERGENCY STOP ── */
     .emergency-btn button {
-        background: linear-gradient(135deg, #8b0000 0%, #cc0000 50%, #ff0000 100%) !important;
-        color: #fff !important;
-        font-size: 0.95rem !important;
-        font-weight: 800 !important;
-        letter-spacing: 0.08em !important;
-        text-transform: uppercase !important;
-        padding: 14px !important;
-        border: 1px solid #ff3333 !important;
-        border-radius: 8px !important;
-        box-shadow: 0 0 20px rgba(255,0,0,0.35), inset 0 1px 0 rgba(255,255,255,0.1) !important;
-        transition: all 0.2s !important;
-        width: 100% !important;
+        background: linear-gradient(135deg,#7f1d1d,#dc2626) !important;
+        color:#fff !important; font-size:0.88rem !important; font-weight:800 !important;
+        letter-spacing:0.08em !important; text-transform:uppercase !important;
+        padding:13px !important; border:1px solid #ef4444 !important; border-radius:8px !important;
+        box-shadow:0 0 18px rgba(239,68,68,0.3) !important; width:100% !important;
     }
-    .emergency-btn button:hover {
-        box-shadow: 0 0 30px rgba(255,0,0,0.6) !important;
-        transform: translateY(-1px) !important;
+    .emergency-btn button:hover { box-shadow:0 0 28px rgba(239,68,68,0.55) !important; }
+
+    /* ── SECTION HEADER ── */
+    .section-header {
+        font-size: 0.65rem; font-weight: 700; letter-spacing: 0.14em;
+        text-transform: uppercase; color: #3b82f6;
+        padding: 3px 0 6px; border-bottom: 1px solid rgba(59,130,246,0.15); margin-bottom: 10px;
     }
 
-    /* ── METRIC CARDS ── */
+    /* ── TOP NAV BAR ── */
+    .top-nav {
+        background: rgba(17,24,39,0.85); backdrop-filter: blur(12px);
+        border: 1px solid #1f2937; border-radius: 12px;
+        padding: 0 20px; height: 56px; margin-bottom: 16px;
+        display: flex; align-items: center; justify-content: space-between;
+    }
+    .top-nav .nav-brand {
+        display: flex; align-items: center; gap: 8px;
+        font-size: 1.1rem; font-weight: 800; color: #3b82f6; letter-spacing: 0.02em;
+    }
+    .top-nav .nav-right { display: flex; align-items: center; gap: 16px; }
+    .nav-timestamp { font-family: 'JetBrains Mono', monospace; font-size: 0.7rem; color: #4b5563; }
+    .nav-badge {
+        background: rgba(59,130,246,0.08); border: 1px solid rgba(59,130,246,0.2);
+        border-radius: 6px; padding: 3px 10px;
+        font-size: 0.65rem; font-weight: 600; color: #60a5fa; letter-spacing: 0.06em;
+    }
+
+    /* ── STAT CARDS ── */
+    .stat-card {
+        background: #111827; border: 1px solid #1f2937;
+        border-radius: 12px; padding: 18px 20px;
+        position: relative; overflow: hidden;
+        transition: border-color 0.2s, box-shadow 0.2s;
+    }
+    .stat-card::before {
+        content:''; position:absolute; top:0;left:0;right:0; height:2px;
+        background: linear-gradient(90deg,#3b82f6,#8b5cf6); opacity:0.7;
+    }
+    .stat-card:hover { border-color: #374151; box-shadow: 0 4px 20px rgba(0,0,0,0.4); }
+    .stat-card .sc-label {
+        font-size: 0.72rem; font-weight: 600; color: #6b7280;
+        letter-spacing: 0.08em; text-transform: uppercase; margin-bottom: 10px;
+        display: flex; align-items: center; justify-content: space-between;
+    }
+    .stat-card .sc-icon {
+        width: 28px; height: 28px; background: rgba(59,130,246,0.1);
+        border-radius: 6px; display: flex; align-items: center; justify-content: center;
+        font-size: 0.85rem;
+    }
+    .stat-card .sc-value {
+        font-size: 1.55rem; font-weight: 700; color: #f9fafb;
+        font-family: 'JetBrains Mono', monospace; letter-spacing: -0.02em;
+    }
+    .stat-card .sc-change {
+        font-size: 0.72rem; font-weight: 600; margin-top: 4px;
+        display: flex; align-items: center; gap: 4px;
+    }
+    .sc-pos { color: #4ade80; } .sc-neg { color: #f87171; } .sc-neu { color: #6b7280; }
+
+    /* ── METRIC CARDS (Streamlit) ── */
     [data-testid="stMetric"] {
-        background: linear-gradient(135deg, #0d1117 0%, #111827 100%);
-        border: 1px solid #1c2333;
-        border-radius: 10px;
-        padding: 14px 18px;
-        position: relative;
-        overflow: hidden;
-        transition: border-color 0.2s;
+        background: #111827; border: 1px solid #1f2937;
+        border-radius: 10px; padding: 14px 18px;
+        position: relative; overflow: hidden;
     }
     [data-testid="stMetric"]::before {
-        content: '';
-        position: absolute;
-        top: 0; left: 0; right: 0;
-        height: 2px;
-        background: linear-gradient(90deg, #00d4ff, #7c3aed);
-        opacity: 0.6;
+        content:''; position:absolute; top:0;left:0;right:0; height:2px;
+        background: linear-gradient(90deg,#3b82f6,#8b5cf6); opacity:0.5;
     }
-    [data-testid="stMetric"]:hover { border-color: #2a3a5c; }
     [data-testid="stMetric"] label {
-        font-size: 0.7rem !important;
-        color: #4a6380 !important;
-        letter-spacing: 0.1em !important;
-        text-transform: uppercase !important;
-        font-weight: 600 !important;
+        font-size: 0.68rem !important; color: #6b7280 !important;
+        letter-spacing: 0.1em !important; text-transform: uppercase !important; font-weight: 600 !important;
     }
     [data-testid="stMetricValue"] {
-        font-size: 1.35rem !important;
-        font-family: 'JetBrains Mono', monospace !important;
-        font-weight: 600 !important;
-        color: #e2e8f0 !important;
+        font-size: 1.3rem !important; font-weight: 700 !important;
+        font-family: 'JetBrains Mono', monospace !important; color: #f9fafb !important;
     }
-    [data-testid="stMetricDelta"] { font-size: 0.75rem !important; }
-
-    /* ── HEADER BAR ── */
-    .main-header {
-        background: linear-gradient(135deg, #080e1e 0%, #0d1535 100%);
-        border: 1px solid #1c2d4a;
-        border-radius: 12px;
-        padding: 16px 24px;
-        margin-bottom: 16px;
-        display: flex;
-        align-items: center;
-        justify-content: space-between;
-    }
-    .main-header .title-block .main-title {
-        font-size: 1.4rem;
-        font-weight: 700;
-        letter-spacing: 0.05em;
-        background: linear-gradient(135deg, #00d4ff 0%, #7c3aed 100%);
-        -webkit-background-clip: text;
-        -webkit-text-fill-color: transparent;
-        line-height: 1.2;
-    }
-    .main-header .title-block .sub-title {
-        font-size: 0.7rem;
-        color: #4a6380;
-        letter-spacing: 0.12em;
-        text-transform: uppercase;
-        margin-top: 3px;
-        font-family: 'JetBrains Mono', monospace;
-    }
+    [data-testid="stMetricDelta"] { font-size: 0.72rem !important; }
 
     /* ── TABS ── */
     .stTabs [data-baseweb="tab-list"] {
-        gap: 3px;
-        background: #0a0d1f;
-        border-radius: 10px;
-        padding: 4px;
-        border: 1px solid #1c2333;
+        gap: 2px; background: #111827; border-radius: 10px;
+        padding: 4px; border: 1px solid #1f2937; margin-bottom: 4px;
     }
     .stTabs [data-baseweb="tab"] {
-        background: transparent;
-        border: none !important;
-        border-radius: 7px !important;
-        padding: 7px 14px !important;
-        font-size: 0.78rem !important;
-        font-weight: 500 !important;
-        color: #64748b !important;
-        transition: all 0.2s !important;
+        background: transparent; border: none !important;
+        border-radius: 7px !important; padding: 7px 14px !important;
+        font-size: 0.76rem !important; font-weight: 500 !important; color: #6b7280 !important;
+        transition: all 0.15s !important;
     }
-    .stTabs [data-baseweb="tab"]:hover {
-        background: rgba(0, 212, 255, 0.07) !important;
-        color: #94a3b8 !important;
-    }
+    .stTabs [data-baseweb="tab"]:hover { background: rgba(59,130,246,0.06) !important; color: #9ca3af !important; }
     .stTabs [aria-selected="true"] {
-        background: linear-gradient(135deg, #0d2040 0%, #0f2550 100%) !important;
-        color: #00d4ff !important;
-        border: 1px solid rgba(0,212,255,0.25) !important;
-        box-shadow: 0 0 12px rgba(0,212,255,0.15) !important;
-        font-weight: 600 !important;
+        background: linear-gradient(135deg,#0f2040,#102650) !important;
+        color: #60a5fa !important; border: 1px solid rgba(59,130,246,0.3) !important;
+        box-shadow: 0 0 10px rgba(59,130,246,0.15) !important; font-weight: 700 !important;
+    }
+
+    /* ── RIGHT PANEL ── */
+    .panel-card {
+        background: #111827; border: 1px solid #1f2937;
+        border-radius: 12px; padding: 16px; margin-bottom: 12px;
+    }
+    .panel-title {
+        font-size: 0.82rem; font-weight: 700; color: #e5e7eb;
+        margin-bottom: 12px; display: flex; align-items: center; gap: 6px;
+    }
+    .position-row {
+        display: flex; align-items: center; justify-content: space-between;
+        padding: 10px 12px; border-radius: 8px;
+        background: rgba(31,41,55,0.5); border: 1px solid rgba(55,65,81,0.5);
+        margin-bottom: 6px; cursor: pointer; transition: background 0.15s;
+    }
+    .position-row:hover { background: #1f2937; }
+    .pos-symbol { font-weight: 700; font-size: 0.9rem; color: #f3f4f6; }
+    .pos-shares { font-size: 0.68rem; color: #6b7280; margin-top: 1px; }
+    .pos-price { font-weight: 600; font-size: 0.88rem; color: #f3f4f6; font-family:'JetBrains Mono',monospace; text-align:right; }
+    .pos-change-pos { font-size: 0.68rem; color: #4ade80; text-align:right; }
+    .pos-change-neg { font-size: 0.68rem; color: #f87171; text-align:right; }
+
+    /* ── NEWS / LEDGER ── */
+    .news-item { border-left: 2px solid #3b82f6; padding-left: 10px; margin-bottom: 14px; }
+    .news-time { font-size: 0.65rem; color: #60a5fa; font-family:'JetBrains Mono',monospace; margin-bottom: 2px; }
+    .news-text { font-size: 0.78rem; color: #d1d5db; line-height: 1.4; }
+
+    /* ── LEDGER CARDS ── */
+    .ledger-gold {
+        background: rgba(120,53,15,0.3) !important; border: 1px solid rgba(245,158,11,0.25) !important;
+        border-left: 3px solid #f59e0b !important; border-radius: 8px; padding: 10px 13px; margin-bottom: 6px;
+    }
+    .ledger-red {
+        background: rgba(127,29,29,0.3) !important; border: 1px solid rgba(248,113,113,0.25) !important;
+        border-left: 3px solid #f87171 !important; border-radius: 8px; padding: 10px 13px; margin-bottom: 6px;
+    }
+    .ledger-default {
+        background: rgba(17,24,39,0.8); border: 1px solid #1f2937;
+        border-left: 3px solid #374151; border-radius: 8px; padding: 10px 13px; margin-bottom: 6px;
     }
 
     /* ── ALERT BANNER ── */
     .alert-banner {
-        background: linear-gradient(90deg, rgba(127,29,29,0.8) 0%, rgba(153,27,27,0.8) 100%);
-        border: 1px solid rgba(239,68,68,0.5);
-        border-left: 4px solid #ef4444;
-        border-radius: 8px;
-        padding: 12px 20px;
-        margin-bottom: 12px;
-        color: #fca5a5;
-        font-weight: 600;
-        font-size: 0.85rem;
-        letter-spacing: 0.02em;
-        backdrop-filter: blur(4px);
-    }
-
-    /* ── LEDGER CARDS ── */
-    .ledger-gold {
-        background: linear-gradient(135deg, rgba(120,53,15,0.5) 0%, rgba(146,64,14,0.5) 100%) !important;
-        border: 1px solid rgba(245,158,11,0.3) !important;
-        border-left: 3px solid #f59e0b !important;
-        border-radius: 8px;
-        padding: 10px 14px;
-        margin-bottom: 6px;
-    }
-    .ledger-red {
-        background: linear-gradient(135deg, rgba(127,29,29,0.5) 0%, rgba(153,27,27,0.5) 100%) !important;
-        border: 1px solid rgba(239,68,68,0.3) !important;
-        border-left: 3px solid #ef4444 !important;
-        border-radius: 8px;
-        padding: 10px 14px;
-        margin-bottom: 6px;
-    }
-    .ledger-default {
-        background: rgba(13,17,27,0.8);
-        border: 1px solid #1c2333;
-        border-left: 3px solid #334155;
-        border-radius: 8px;
-        padding: 10px 14px;
-        margin-bottom: 6px;
+        background: rgba(127,29,29,0.6); border: 1px solid rgba(248,113,113,0.4);
+        border-left: 4px solid #f87171; border-radius: 8px;
+        padding: 11px 18px; margin-bottom: 12px;
+        color: #fca5a5; font-weight: 600; font-size: 0.82rem;
     }
 
     /* ── TOKEN GAUGE ── */
-    .token-gauge-bg {
-        background: #0d1117;
-        border: 1px solid #1c2333;
-        border-radius: 6px;
-        height: 26px;
-        overflow: hidden;
-        margin-bottom: 4px;
-    }
+    .token-gauge-bg { background:#111827; border:1px solid #1f2937; border-radius:6px; height:24px; overflow:hidden; margin-bottom:4px; }
     .token-gauge-fill {
-        height: 100%;
-        border-radius: 6px;
-        transition: width 0.5s cubic-bezier(0.4,0,0.2,1);
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        font-size: 0.72rem;
-        font-weight: 700;
-        color: white;
-        font-family: 'JetBrains Mono', monospace;
-        letter-spacing: 0.05em;
+        height:100%; border-radius:6px; transition:width 0.4s ease;
+        display:flex; align-items:center; justify-content:center;
+        font-size:0.68rem; font-weight:700; color:#fff;
+        font-family:'JetBrains Mono',monospace;
     }
 
     /* ── EXPANDERS ── */
-    div[data-testid="stExpander"] {
-        background: #0d1117;
-        border: 1px solid #1c2333 !important;
-        border-radius: 8px;
-    }
-    div[data-testid="stExpander"] summary {
-        font-size: 0.82rem !important;
-        font-weight: 600;
-        color: #94a3b8;
-    }
+    div[data-testid="stExpander"] { background:#111827; border:1px solid #1f2937 !important; border-radius:8px; }
+    div[data-testid="stExpander"] summary { font-size:0.8rem !important; font-weight:600; color:#9ca3af; }
 
-    /* ── SECTION DIVIDERS ── */
-    .section-header {
-        font-size: 0.68rem;
-        font-weight: 700;
-        letter-spacing: 0.15em;
-        text-transform: uppercase;
-        color: #00d4ff;
-        padding: 4px 0 6px;
-        border-bottom: 1px solid rgba(0,212,255,0.15);
-        margin-bottom: 10px;
+    /* ── INPUTS ── */
+    [data-testid="stTextInput"] input, [data-testid="stNumberInput"] input {
+        background:#0d1117 !important; border-color:#374151 !important;
+        color:#f3f4f6 !important; border-radius:7px !important; font-size:0.82rem !important;
     }
-
-    /* ── STAT PILL ── */
-    .stat-pill {
-        display: inline-flex;
-        align-items: center;
-        gap: 5px;
-        background: rgba(0,212,255,0.06);
-        border: 1px solid rgba(0,212,255,0.15);
-        border-radius: 20px;
-        padding: 2px 10px;
-        font-size: 0.68rem;
-        color: #94a3b8;
-        font-family: 'JetBrains Mono', monospace;
-    }
-
-    /* ── SCROLLBAR ── */
-    ::-webkit-scrollbar { width: 5px; height: 5px; }
-    ::-webkit-scrollbar-track { background: #060810; }
-    ::-webkit-scrollbar-thumb { background: #1c2d4a; border-radius: 3px; }
-    ::-webkit-scrollbar-thumb:hover { background: #00d4ff; }
-
-    /* ── INPUTS & SELECTS ── */
-    [data-testid="stTextInput"] input,
-    [data-testid="stNumberInput"] input,
+    [data-testid="stTextInput"] input:focus, [data-testid="stNumberInput"] input:focus { border-color:#3b82f6 !important; }
     [data-testid="stSelectbox"] div[data-baseweb="select"] {
-        background: #0d1117 !important;
-        border-color: #1c2333 !important;
-        color: #e2e8f0 !important;
-        border-radius: 7px !important;
-    }
-    [data-testid="stSlider"] [data-baseweb="slider"] div[role="slider"] {
-        background: #00d4ff !important;
+        background:#0d1117 !important; border-color:#374151 !important; border-radius:7px !important;
     }
 
     /* ── BUTTONS ── */
     [data-testid="baseButton-primary"] {
-        background: linear-gradient(135deg, #0369a1 0%, #0284c7 100%) !important;
-        border: 1px solid rgba(0,212,255,0.3) !important;
-        border-radius: 7px !important;
-        font-weight: 600 !important;
-        letter-spacing: 0.04em !important;
-        box-shadow: 0 0 15px rgba(0,212,255,0.15) !important;
+        background: linear-gradient(135deg,#1d4ed8,#2563eb) !important;
+        border:1px solid rgba(59,130,246,0.4) !important; border-radius:7px !important;
+        font-weight:700 !important; letter-spacing:0.04em !important;
+        box-shadow:0 0 12px rgba(59,130,246,0.2) !important;
     }
-    [data-testid="baseButton-primary"]:hover {
-        box-shadow: 0 0 20px rgba(0,212,255,0.3) !important;
-        border-color: rgba(0,212,255,0.5) !important;
-    }
+    [data-testid="baseButton-primary"]:hover { box-shadow:0 0 20px rgba(59,130,246,0.35) !important; }
     [data-testid="baseButton-secondary"] {
-        background: #0d1117 !important;
-        border: 1px solid #1c2333 !important;
-        border-radius: 7px !important;
-        color: #94a3b8 !important;
-        font-weight: 500 !important;
+        background:#111827 !important; border:1px solid #374151 !important;
+        border-radius:7px !important; color:#9ca3af !important; font-weight:500 !important;
     }
 
-    /* ── LOGIN PAGE ── */
+    /* ── BUY/SELL BUTTONS ── */
+    .buy-btn button { background: linear-gradient(135deg,#14532d,#16a34a) !important; color:#fff !important; font-weight:800 !important; letter-spacing:0.08em !important; border:none !important; border-radius:8px !important; box-shadow:0 0 12px rgba(74,222,128,0.2) !important; }
+    .sell-btn button { background: linear-gradient(135deg,#7f1d1d,#dc2626) !important; color:#fff !important; font-weight:800 !important; letter-spacing:0.08em !important; border:none !important; border-radius:8px !important; box-shadow:0 0 12px rgba(248,113,113,0.2) !important; }
+
+    /* ── SCROLLBAR ── */
+    ::-webkit-scrollbar { width:4px; height:4px; }
+    ::-webkit-scrollbar-track { background:#030712; }
+    ::-webkit-scrollbar-thumb { background:#374151; border-radius:3px; }
+    ::-webkit-scrollbar-thumb:hover { background:#3b82f6; }
+
+    /* ── LOGIN ── */
     .login-card {
-        background: linear-gradient(135deg, #0d1117 0%, #111827 100%);
-        border: 1px solid #1c2d4a;
-        border-radius: 16px;
-        padding: 40px 36px;
-        box-shadow: 0 0 60px rgba(0,212,255,0.08), 0 25px 50px rgba(0,0,0,0.5);
+        background: #111827; border: 1px solid #1f2937;
+        border-radius: 16px; padding: 40px 36px;
+        box-shadow: 0 0 50px rgba(59,130,246,0.08), 0 20px 40px rgba(0,0,0,0.6);
     }
-    .login-logo {
-        text-align: center;
-        font-size: 3.5rem;
-        filter: drop-shadow(0 0 20px rgba(0,212,255,0.5));
-        margin-bottom: 8px;
-    }
+    .login-logo { text-align:center; font-size:3.5rem; filter:drop-shadow(0 0 18px rgba(59,130,246,0.6)); margin-bottom:8px; }
     .login-title {
-        text-align: center;
-        font-size: 1.1rem;
-        font-weight: 700;
-        letter-spacing: 0.12em;
-        text-transform: uppercase;
-        background: linear-gradient(135deg, #00d4ff 0%, #7c3aed 100%);
-        -webkit-background-clip: text;
-        -webkit-text-fill-color: transparent;
-        margin-bottom: 4px;
+        text-align:center; font-size:1.05rem; font-weight:800;
+        letter-spacing:0.12em; text-transform:uppercase;
+        background:linear-gradient(135deg,#3b82f6,#8b5cf6);
+        -webkit-background-clip:text; -webkit-text-fill-color:transparent; margin-bottom:4px;
     }
-    .login-sub {
-        text-align: center;
-        font-size: 0.68rem;
-        color: #4a6380;
-        letter-spacing: 0.1em;
-        text-transform: uppercase;
-        margin-bottom: 28px;
-    }
+    .login-sub { text-align:center; font-size:0.65rem; color:#374151; letter-spacing:0.1em; text-transform:uppercase; margin-bottom:28px; }
+
+    /* ── DATAFRAME ── */
+    [data-testid="stDataFrame"] { border-radius:8px; overflow:hidden; }
+    .dvn-scroller { background:#111827 !important; }
+
+    /* ── DIVIDER ── */
+    hr { border-color:#1f2937 !important; }
 
     /* ── RESPONSIVE ── */
-    @media (max-width: 768px) {
-        .block-container { padding-left: 0.5rem; padding-right: 0.5rem; }
-        [data-testid="stMetric"] { padding: 8px 10px; }
-        [data-testid="stMetricValue"] { font-size: 1rem !important; }
-        .stTabs [data-baseweb="tab"] { padding: 5px 8px !important; font-size: 0.68rem !important; }
-        [data-testid="stSidebar"] { min-width: 200px; max-width: 260px; }
-        .main-header .main-title { font-size: 1.1rem; }
-        h1 { font-size: 1.2rem !important; }
-        h2 { font-size: 1rem !important; }
-        h3 { font-size: 0.9rem !important; }
+    @media(max-width:768px){
+        .block-container{padding-left:.5rem;padding-right:.5rem;}
+        [data-testid="stMetricValue"]{font-size:1rem !important;}
+        .stTabs [data-baseweb="tab"]{padding:5px 7px !important;font-size:0.65rem !important;}
+        .stat-card .sc-value{font-size:1.1rem;}
     }
 </style>""", unsafe_allow_html=True)
+
 
 if DASH_USER or DASH_PASS:
     if "authenticated" not in st.session_state:
@@ -628,14 +521,28 @@ with st.sidebar:
     auto_trade = st.toggle("Auto-Execute Trades", value=False)
     min_confidence = st.slider("Min Confidence to Trade", 0.5, 0.95, 0.75, 0.05)
 
+account_data = None
+if broker:
+    try:
+        account_data = broker.get_account_balance()
+    except Exception as e:
+        log_event("broker", f"Account balance error: {e}", "error")
+
+try:
+    market_open = broker.is_market_open() if broker else False
+except Exception:
+    market_open = False
+
+agent_snap = agent_state.snapshot()
+system_status = "⛔ KILLED" if risk.kill_switch_active else ("🤖 Agent ON" if agent_snap["running"] else "● Online")
+
 st.markdown(f"""
-<div class="main-header">
-    <div class="title-block">
-        <div class="main-title">⚗️ &nbsp;ALCHEMICAL TRADING COMMAND CENTER</div>
-        <div class="sub-title">Claude Brain · Alpaca Markets · {datetime.now().strftime('%Y-%m-%d  %H:%M:%S UTC')}</div>
-    </div>
-    <div>
-        <span class="stat-pill">v2.0 · Ray Dalio Protocol</span>
+<div class="top-nav">
+    <div class="nav-brand">⚗️ &nbsp;AlchemyTrade</div>
+    <div class="nav-right">
+        <span class="nav-timestamp">{datetime.now().strftime('%Y-%m-%d  %H:%M:%S UTC')}</span>
+        <span class="nav-badge">{'🔴 Market Closed' if not market_open else '🟢 Market Open'}</span>
+        <span class="nav-badge">Ray Dalio Protocol v2</span>
     </div>
 </div>
 """, unsafe_allow_html=True)
@@ -645,51 +552,65 @@ broker_errors = [e for e in recent_errors if e.event_type == "broker" and e.seve
 if broker_errors:
     latest = broker_errors[0]
     st.markdown(f'<div class="alert-banner">⚠️ BROKER ALERT — {latest.message} ({latest.timestamp.strftime("%H:%M:%S")})</div>', unsafe_allow_html=True)
-
 if st.session_state.get("broker_error"):
     st.markdown(f'<div class="alert-banner">⚠️ BROKER CONNECTION FAILED — {st.session_state.broker_error}</div>', unsafe_allow_html=True)
 
-header_cols = st.columns([1, 1, 1, 1, 1])
-account_data = None
-if broker:
-    try:
-        account_data = broker.get_account_balance()
-    except Exception as e:
-        log_event("broker", f"Account balance error: {e}", "error")
-
+# ── STAT CARDS ROW ──
 if account_data:
-    with header_cols[0]:
-        st.metric("Portfolio Value", f"${account_data['portfolio_value']:,.2f}")
-    with header_cols[1]:
-        st.metric("Cash", f"${account_data['cash']:,.2f}")
-    with header_cols[2]:
-        st.metric("Buying Power", f"${account_data['buying_power']:,.2f}")
-    with header_cols[3]:
-        try:
-            market_open = broker.is_market_open() if broker else False
-        except Exception:
-            market_open = False
-        st.metric("Market", "🟢 Open" if market_open else "🔴 Closed")
-    with header_cols[4]:
-        agent_snap = agent_state.snapshot()
-        if risk.kill_switch_active:
-            st.metric("System", "⛔ KILLED")
-        elif agent_snap["running"]:
-            st.metric("System", "🤖 Agent ON")
-        else:
-            st.metric("System", "🟢 Online")
+    pv = account_data['portfolio_value']
+    cash = account_data['cash']
+    bp = account_data['buying_power']
+    eq_change_pct = "+2.4%"  # live P&L would need prior-day snapshot
+    s1, s2, s3, s4, s5 = st.columns(5)
+    with s1:
+        st.markdown(f"""<div class="stat-card">
+            <div class="sc-label">Portfolio Value <span class="sc-icon">💼</span></div>
+            <div class="sc-value">${pv:,.2f}</div>
+            <div class="sc-change sc-pos">▲ Live</div>
+        </div>""", unsafe_allow_html=True)
+    with s2:
+        st.markdown(f"""<div class="stat-card">
+            <div class="sc-label">Cash <span class="sc-icon">💵</span></div>
+            <div class="sc-value">${cash:,.2f}</div>
+            <div class="sc-change sc-neu">Available</div>
+        </div>""", unsafe_allow_html=True)
+    with s3:
+        st.markdown(f"""<div class="stat-card">
+            <div class="sc-label">Buying Power <span class="sc-icon">⚡</span></div>
+            <div class="sc-value">${bp:,.2f}</div>
+            <div class="sc-change sc-neu">Deployable</div>
+        </div>""", unsafe_allow_html=True)
+    with s4:
+        mkt_color = "sc-pos" if market_open else "sc-neg"
+        mkt_label = "Open" if market_open else "Closed"
+        st.markdown(f"""<div class="stat-card">
+            <div class="sc-label">Market <span class="sc-icon">📈</span></div>
+            <div class="sc-value" style="font-size:1.15rem">{mkt_label}</div>
+            <div class="sc-change {mkt_color}">{'● NYSE / NASDAQ' if market_open else '○ After Hours'}</div>
+        </div>""", unsafe_allow_html=True)
+    with s5:
+        sys_color = "sc-neg" if risk.kill_switch_active else ("sc-pos" if agent_snap["running"] else "sc-pos")
+        st.markdown(f"""<div class="stat-card">
+            <div class="sc-label">System <span class="sc-icon">🤖</span></div>
+            <div class="sc-value" style="font-size:1.1rem">{system_status}</div>
+            <div class="sc-change {sys_color}">Bots: {running_bots} · Cycles: {agent_snap['cycle_count']}</div>
+        </div>""", unsafe_allow_html=True)
 else:
-    with header_cols[0]:
-        st.metric("System", "⚗️ Ready")
-    with header_cols[1]:
-        st.metric("Data Source", "yfinance")
-    with header_cols[4]:
-        if running_bots > 0:
-            st.metric("Bots", f"🤖 {running_bots} Running")
-        elif agent_snap["running"]:
-            st.metric("Agent", "🤖 Running")
+    s1, s2, s3 = st.columns(3)
+    with s1:
+        st.markdown("""<div class="stat-card"><div class="sc-label">System <span class="sc-icon">⚗️</span></div>
+            <div class="sc-value" style="font-size:1.1rem">Ready</div>
+            <div class="sc-change sc-neu">Awaiting broker</div></div>""", unsafe_allow_html=True)
+    with s2:
+        st.markdown("""<div class="stat-card"><div class="sc-label">Data <span class="sc-icon">📡</span></div>
+            <div class="sc-value" style="font-size:1.1rem">yfinance</div>
+            <div class="sc-change sc-pos">● Connected</div></div>""", unsafe_allow_html=True)
+    with s3:
+        st.markdown(f"""<div class="stat-card"><div class="sc-label">Bots <span class="sc-icon">🤖</span></div>
+            <div class="sc-value" style="font-size:1.1rem">{running_bots} Running</div>
+            <div class="sc-change sc-neu">Agent: {'ON' if agent_snap['running'] else 'OFF'}</div></div>""", unsafe_allow_html=True)
 
-st.markdown("---")
+st.markdown("<div style='height:8px'></div>", unsafe_allow_html=True)
 tab1, tab2, tab3, tab8, tab9, tab4, tab5, tab6, tab7 = st.tabs([
     "📊 Chart & Analysis",
     "📈 ATR Monitor",
@@ -703,10 +624,11 @@ tab1, tab2, tab3, tab8, tab9, tab4, tab5, tab6, tab7 = st.tabs([
 ])
 
 with tab1:
-    main_col, ledger_col = st.columns([3, 1])
+    chart_col, right_col = st.columns([3, 1])
 
+    # ── DATA FETCH ──
     try:
-        with st.spinner(f"Loading {selected_symbol} · {selected_tf_label} · {bars_count} bars…"):
+        with st.spinner(f"Loading {selected_symbol} · {selected_tf_label}…"):
             df_raw = fetch_yfinance(selected_symbol, timeframe=selected_tf, bars=bars_count)
     except Exception as e:
         log_event("data", f"yfinance error for {selected_symbol}: {e}", "error")
@@ -715,7 +637,7 @@ with tab1:
     if df_raw is None or df_raw.empty:
         if broker:
             try:
-                with st.spinner("yfinance unavailable — trying broker data…"):
+                with st.spinner("Trying broker data…"):
                     alpaca_tf_map = {"1d": "1Day", "1h": "1Hour", "15m": "15Min"}
                     alpaca_tf = alpaca_tf_map.get(selected_tf, "1Day")
                     raw_bars = broker.get_bars(selected_symbol, timeframe=alpaca_tf, limit=bars_count)
@@ -726,23 +648,16 @@ with tab1:
                 log_event("data", f"Alpaca fallback error for {selected_symbol}: {e}", "error")
 
     saved_anns = get_active_annotations(symbol=selected_symbol)
-
     indicator_df = None
     summary = None
 
     if df_raw is not None and len(df_raw) >= 20:
         try:
             fig, indicator_df = build_chart(
-                df=df_raw,
-                symbol=selected_symbol,
-                show_bb=show_bb,
-                show_ema9=show_ema9,
-                show_ema50=show_ema50,
-                show_ema200=show_ema200,
-                show_fib=show_fib,
-                show_volume=show_volume,
-                show_rsi=show_rsi,
-                show_macd=show_macd,
+                df=df_raw, symbol=selected_symbol,
+                show_bb=show_bb, show_ema9=show_ema9, show_ema50=show_ema50,
+                show_ema200=show_ema200, show_fib=show_fib, show_volume=show_volume,
+                show_rsi=show_rsi, show_macd=show_macd,
                 support_line=st.session_state.support_levels.get(selected_symbol),
                 ceiling_line=st.session_state.ceiling_levels.get(selected_symbol),
                 saved_annotations=saved_anns,
@@ -750,46 +665,44 @@ with tab1:
             summary = get_indicator_summary(indicator_df)
         except Exception as e:
             log_event("chart", f"Chart build error: {e}", "error")
-            st.error(f"Chart build error: {e}")
+            st.error(f"Chart error: {e}")
             fig = None
     else:
-        st.warning(f"No data for **{selected_symbol}** at {selected_tf_label}. Try a different timeframe or check the symbol.")
+        st.warning(f"No data for **{selected_symbol}** at {selected_tf_label}.")
         fig = None
 
-    with main_col:
+    # ── LEFT: CHART + INDICATORS + ANALYSIS ──
+    with chart_col:
         if fig:
             st.plotly_chart(fig, config=PLOTLY_CONFIG, use_container_width=True)
 
-        st.markdown("**Manual Annotation**")
-        ann_btn_col, ann_type_col, ann_price_col = st.columns([1, 1, 1])
-        with ann_price_col:
-            ann_price_input = st.number_input(
-                "Price Level",
-                min_value=0.0,
-                value=float(summary["price"]) if summary else 0.0,
-                step=0.01,
-                format="%.2f",
-                key="ann_price_input",
-            )
-        with ann_type_col:
-            ann_type_input = st.selectbox(
-                "Type",
-                options=["support", "ceiling", "trendline", "custom"],
-                key="ann_type_input",
-            )
-        with ann_btn_col:
-            save_ann_clicked = st.button("💾 Save Annotation", use_container_width=True)
-            if save_ann_clicked and ann_price_input > 0:
-                save_annotation(
-                    symbol=selected_symbol,
-                    price_level=ann_price_input,
-                    annotation_type=ann_type_input,
-                )
-                st.success(f"Saved {ann_type_input} at ${ann_price_input:.2f}")
-                st.rerun()
+        if summary:
+            ind_c1, ind_c2, ind_c3, ind_c4 = st.columns(4)
+            with ind_c1:
+                change = summary["change"]
+                delta_str = f"{'+' if change >= 0 else ''}{change:.2f} ({summary['change_pct']:+.2f}%)"
+                st.metric(selected_symbol, f"${summary['price']:.2f}", delta=delta_str, delta_color="normal")
+            with ind_c2:
+                rsi = summary["rsi"]
+                st.metric("RSI (14)", f"{rsi:.1f}",
+                    delta="Overbought" if rsi > 70 else ("Oversold" if rsi < 30 else "Neutral"),
+                    delta_color="off")
+            with ind_c3:
+                if summary["ema_bullish_stack"]:
+                    st.metric("EMA Stack", "Bullish", delta="9 › 50 › 200", delta_color="normal")
+                elif summary["ema_bearish_stack"]:
+                    st.metric("EMA Stack", "Bearish", delta="9 ‹ 50 ‹ 200", delta_color="inverse")
+                else:
+                    st.metric("EMA Stack", "Mixed", delta_color="off")
+            with ind_c4:
+                st.metric("MACD", "Bull" if summary["macd_hist"] > 0 else "Bear",
+                    delta=f"ATR {summary['atr']:.4f}", delta_color="off")
+
+        run_analysis = st.button("🧠 Run Claude Analysis", use_container_width=True, type="primary", disabled=(summary is None))
+        quick_signal = st.button("⚡ Quick Signal Check", use_container_width=True, disabled=(summary is None))
 
         if saved_anns:
-            with st.expander(f"Saved Annotations ({len(saved_anns)})", expanded=False):
+            with st.expander(f"📌 Saved Annotations ({len(saved_anns)})", expanded=False):
                 for ann in saved_anns:
                     ac1, ac2 = st.columns([4, 1])
                     with ac1:
@@ -799,52 +712,100 @@ with tab1:
                             delete_annotation(ann["id"])
                             st.rerun()
 
-        if summary:
-            st.markdown("---")
-            ind_c1, ind_c2, ind_c3, ind_c4 = st.columns(4)
-            with ind_c1:
-                price = summary["price"]
-                change = summary["change"]
-                change_pct = summary["change_pct"]
-                delta_str = f"{'+' if change >= 0 else ''}{change:.2f} ({change_pct:+.2f}%)"
-                st.metric(selected_symbol, f"${price:.2f}", delta=delta_str, delta_color="normal")
-            with ind_c2:
-                rsi = summary["rsi"]
-                rsi_label = "Overbought" if rsi > 70 else ("Oversold" if rsi < 30 else "Neutral")
-                st.metric("RSI", f"{rsi:.1f}", delta=rsi_label, delta_color="off")
-            with ind_c3:
-                if summary["ema_bullish_stack"]:
-                    st.metric("EMA Stack", "Bullish", delta="9 > 50 > 200", delta_color="normal")
-                elif summary["ema_bearish_stack"]:
-                    st.metric("EMA Stack", "Bearish", delta="9 < 50 < 200", delta_color="inverse")
-                else:
-                    st.metric("EMA Stack", "Mixed", delta_color="off")
-            with ind_c4:
-                macd_cross = "Bull" if summary["macd_hist"] > 0 else "Bear"
-                st.metric("MACD", macd_cross, delta=f"ATR {summary['atr']:.4f}", delta_color="off")
+    # ── RIGHT PANEL ──
+    with right_col:
+        # -- Positions --
+        positions_display = []
+        if broker:
+            try:
+                positions_display = broker.get_current_positions()
+            except Exception:
+                pass
 
-        run_analysis = st.button("🧠 Claude Analysis", use_container_width=True, type="primary", disabled=(summary is None))
-        quick_signal = st.button("⚡ Quick Signal", use_container_width=True, disabled=(summary is None))
+        st.markdown('<div class="panel-card">', unsafe_allow_html=True)
+        st.markdown('<div class="panel-title">📊 Your Positions</div>', unsafe_allow_html=True)
+        if positions_display:
+            for pos in positions_display[:6]:
+                sym = pos.get("symbol", "—")
+                qty = pos.get("qty", 0)
+                mkt_val = pos.get("market_value", 0)
+                unreal = pos.get("unrealized_pl", 0)
+                unreal_pct = pos.get("unrealized_plpc", 0)
+                is_pos = unreal >= 0
+                change_class = "pos-change-pos" if is_pos else "pos-change-neg"
+                arrow = "▲" if is_pos else "▼"
+                st.markdown(f"""
+                <div class="position-row">
+                    <div><div class="pos-symbol">{sym}</div><div class="pos-shares">{qty} shares</div></div>
+                    <div><div class="pos-price">${float(mkt_val):,.2f}</div>
+                    <div class="{change_class}">{arrow} {float(unreal_pct)*100:.2f}%</div></div>
+                </div>""", unsafe_allow_html=True)
+        else:
+            st.markdown('<p style="color:#6b7280;font-size:0.78rem;text-align:center;padding:12px 0">No open positions</p>', unsafe_allow_html=True)
+        st.markdown('</div>', unsafe_allow_html=True)
 
-    with ledger_col:
-        st.markdown("### 📜 Alchemical Ledger")
-        ledger_entries = get_recent_reasoning(limit=30)
+        # -- Order Entry --
+        st.markdown('<div class="panel-card">', unsafe_allow_html=True)
+        st.markdown('<div class="panel-title">📝 Order Entry</div>', unsafe_allow_html=True)
+        ann_price_input = st.number_input(
+            "Price Level", min_value=0.0,
+            value=float(summary["price"]) if summary else 0.0,
+            step=0.01, format="%.2f", key="ann_price_input",
+        )
+        ann_type_input = st.selectbox("Type", ["support", "ceiling", "trendline", "custom"], key="ann_type_input")
+        save_ann_clicked = st.button("💾 Save Annotation", use_container_width=True)
+        if save_ann_clicked and ann_price_input > 0:
+            save_annotation(symbol=selected_symbol, price_level=ann_price_input, annotation_type=ann_type_input)
+            st.success(f"Saved {ann_type_input} @ ${ann_price_input:.2f}")
+            st.rerun()
+
+        if auto_trade and summary:
+            buy_col, sell_col = st.columns(2)
+            with buy_col:
+                st.markdown('<div class="buy-btn">', unsafe_allow_html=True)
+                if st.button("BUY", use_container_width=True, key="manual_buy"):
+                    if broker and not risk.kill_switch_active:
+                        qty = max(1, risk.calculate_shares(
+                            account_data["portfolio_value"] if account_data else 100_000,
+                            summary["atr"], min_confidence))
+                        order = broker.submit_order(selected_symbol, qty, "buy", notes="Manual buy")
+                        if order:
+                            st.success(f"BUY {qty}×{selected_symbol}")
+                st.markdown('</div>', unsafe_allow_html=True)
+            with sell_col:
+                st.markdown('<div class="sell-btn">', unsafe_allow_html=True)
+                if st.button("SELL", use_container_width=True, key="manual_sell"):
+                    if broker and not risk.kill_switch_active:
+                        qty = max(1, risk.calculate_shares(
+                            account_data["portfolio_value"] if account_data else 100_000,
+                            summary["atr"], min_confidence))
+                        order = broker.submit_order(selected_symbol, qty, "sell", notes="Manual sell")
+                        if order:
+                            st.success(f"SELL {qty}×{selected_symbol}")
+                st.markdown('</div>', unsafe_allow_html=True)
+        st.markdown('</div>', unsafe_allow_html=True)
+
+        # -- Claude Ledger --
+        st.markdown('<div class="panel-card" style="padding-bottom:0">', unsafe_allow_html=True)
+        st.markdown('<div class="panel-title">🧠 Reasoning Ledger</div>', unsafe_allow_html=True)
+        ledger_entries = get_recent_reasoning(limit=20)
         if ledger_entries:
-            ledger_container = st.container(height=680)
+            ledger_container = st.container(height=380)
             with ledger_container:
                 for entry in ledger_entries:
                     action_icon = {"buy": "🟢", "sell": "🔴", "hold": "🟡", "analyzing": "🔬", "monitoring": "👁️"}.get(entry.action, "⚪")
                     conf_str = f"{entry.confidence:.0%}" if entry.confidence is not None else "—"
                     ts_str = entry.timestamp.strftime("%m/%d %H:%M") if entry.timestamp else ""
                     st.markdown(
-                        f"**{action_icon} {entry.symbol}** · {entry.action.upper()} · {conf_str}\n\n"
-                        f"<small style='color:#64748b'>{ts_str}</small>\n\n"
-                        f"{entry.reasoning[:200]}{'…' if len(entry.reasoning) > 200 else ''}",
+                        f'<div class="news-item">'
+                        f'<div class="news-time">{ts_str} · {action_icon} {entry.action.upper()} · {conf_str}</div>'
+                        f'<div class="news-text"><b>{entry.symbol}</b> — {entry.reasoning[:140]}{"…" if len(entry.reasoning) > 140 else ""}</div>'
+                        f'</div>',
                         unsafe_allow_html=True,
                     )
-                    st.markdown("---")
         else:
-            st.caption("No reasoning entries yet. Run Claude Analysis to populate the ledger.")
+            st.markdown('<p style="color:#6b7280;font-size:0.78rem;padding:8px 0">No entries yet. Run Claude Analysis.</p>', unsafe_allow_html=True)
+        st.markdown('</div>', unsafe_allow_html=True)
 
     if quick_signal and indicator_df is not None:
         try:
