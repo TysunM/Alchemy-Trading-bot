@@ -76,107 +76,394 @@ st.set_page_config(
 )
 
 st.markdown("""<style>
-    .block-container { padding-top: 1rem; padding-bottom: 1rem; }
+    /* ── GLOBAL ── */
+    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;600&display=swap');
+
+    html, body, [class*="css"] {
+        font-family: 'Inter', sans-serif;
+    }
+    .main { background-color: #060810; }
+    .block-container {
+        padding-top: 0.75rem;
+        padding-bottom: 1rem;
+        max-width: 100% !important;
+    }
+
+    /* ── SIDEBAR ── */
+    [data-testid="stSidebar"] {
+        background: linear-gradient(180deg, #07091a 0%, #0a0d1f 100%);
+        border-right: 1px solid #1a2540;
+    }
+    [data-testid="stSidebar"] .block-container { padding-top: 0; }
+    [data-testid="stSidebar"] label { color: #94a3b8 !important; font-size: 0.78rem !important; letter-spacing: 0.03em; }
+    [data-testid="stSidebar"] .stMarkdown h2 { color: #e2e8f0; font-size: 1rem !important; }
+    [data-testid="stSidebar"] .stMarkdown h3 {
+        color: #00d4ff;
+        font-size: 0.72rem !important;
+        letter-spacing: 0.12em;
+        text-transform: uppercase;
+        font-weight: 600;
+        margin-top: 0.5rem;
+        margin-bottom: 0.25rem;
+    }
+    [data-testid="stSidebar"] hr { border-color: #1a2540 !important; margin: 0.6rem 0 !important; }
+
+    /* ── SIDEBAR BRAND HEADER ── */
+    .sidebar-brand {
+        background: linear-gradient(135deg, #0d1535 0%, #0a1628 100%);
+        border-bottom: 1px solid #1e3a5f;
+        padding: 18px 16px 14px;
+        margin: -1rem -1rem 0.75rem;
+        text-align: center;
+    }
+    .sidebar-brand .brand-icon {
+        font-size: 2.2rem;
+        line-height: 1;
+        filter: drop-shadow(0 0 12px rgba(0,212,255,0.6));
+    }
+    .sidebar-brand .brand-name {
+        font-size: 0.85rem;
+        font-weight: 700;
+        letter-spacing: 0.15em;
+        text-transform: uppercase;
+        color: #00d4ff;
+        margin-top: 4px;
+    }
+    .sidebar-brand .brand-sub {
+        font-size: 0.65rem;
+        color: #4a6380;
+        letter-spacing: 0.1em;
+        text-transform: uppercase;
+    }
+
+    /* ── STATUS BADGE ── */
+    .status-online {
+        display: inline-flex; align-items: center; gap: 6px;
+        background: rgba(0,255,136,0.08);
+        border: 1px solid rgba(0,255,136,0.25);
+        border-radius: 20px;
+        padding: 4px 12px;
+        font-size: 0.72rem;
+        font-weight: 600;
+        color: #00ff88;
+        letter-spacing: 0.05em;
+    }
+    .status-online::before { content: '●'; font-size: 0.5rem; animation: pulse-green 2s infinite; }
+    .status-killed {
+        display: inline-flex; align-items: center; gap: 6px;
+        background: rgba(255,51,102,0.1);
+        border: 1px solid rgba(255,51,102,0.35);
+        border-radius: 20px;
+        padding: 4px 12px;
+        font-size: 0.72rem;
+        font-weight: 600;
+        color: #ff3366;
+        letter-spacing: 0.05em;
+    }
+    @keyframes pulse-green {
+        0%, 100% { opacity: 1; } 50% { opacity: 0.3; }
+    }
+
+    /* ── EMERGENCY STOP BUTTON ── */
+    .emergency-btn button {
+        background: linear-gradient(135deg, #8b0000 0%, #cc0000 50%, #ff0000 100%) !important;
+        color: #fff !important;
+        font-size: 0.95rem !important;
+        font-weight: 800 !important;
+        letter-spacing: 0.08em !important;
+        text-transform: uppercase !important;
+        padding: 14px !important;
+        border: 1px solid #ff3333 !important;
+        border-radius: 8px !important;
+        box-shadow: 0 0 20px rgba(255,0,0,0.35), inset 0 1px 0 rgba(255,255,255,0.1) !important;
+        transition: all 0.2s !important;
+        width: 100% !important;
+    }
+    .emergency-btn button:hover {
+        box-shadow: 0 0 30px rgba(255,0,0,0.6) !important;
+        transform: translateY(-1px) !important;
+    }
+
+    /* ── METRIC CARDS ── */
     [data-testid="stMetric"] {
-        background: linear-gradient(135deg, #0f1729 0%, #131d36 100%);
-        border: 1px solid #1a2540;
-        border-radius: 8px;
-        padding: 12px 16px;
+        background: linear-gradient(135deg, #0d1117 0%, #111827 100%);
+        border: 1px solid #1c2333;
+        border-radius: 10px;
+        padding: 14px 18px;
+        position: relative;
+        overflow: hidden;
+        transition: border-color 0.2s;
     }
-    [data-testid="stMetric"] label { font-size: 0.75rem !important; color: #64748b !important; }
-    [data-testid="stMetric"] [data-testid="stMetricValue"] { font-size: 1.2rem !important; }
-    div[data-testid="stExpander"] {
-        background: #0f1729;
-        border: 1px solid #1a2540;
-        border-radius: 8px;
+    [data-testid="stMetric"]::before {
+        content: '';
+        position: absolute;
+        top: 0; left: 0; right: 0;
+        height: 2px;
+        background: linear-gradient(90deg, #00d4ff, #7c3aed);
+        opacity: 0.6;
     }
-    .stTabs [data-baseweb="tab-list"] { gap: 4px; }
+    [data-testid="stMetric"]:hover { border-color: #2a3a5c; }
+    [data-testid="stMetric"] label {
+        font-size: 0.7rem !important;
+        color: #4a6380 !important;
+        letter-spacing: 0.1em !important;
+        text-transform: uppercase !important;
+        font-weight: 600 !important;
+    }
+    [data-testid="stMetricValue"] {
+        font-size: 1.35rem !important;
+        font-family: 'JetBrains Mono', monospace !important;
+        font-weight: 600 !important;
+        color: #e2e8f0 !important;
+    }
+    [data-testid="stMetricDelta"] { font-size: 0.75rem !important; }
+
+    /* ── HEADER BAR ── */
+    .main-header {
+        background: linear-gradient(135deg, #080e1e 0%, #0d1535 100%);
+        border: 1px solid #1c2d4a;
+        border-radius: 12px;
+        padding: 16px 24px;
+        margin-bottom: 16px;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+    }
+    .main-header .title-block .main-title {
+        font-size: 1.4rem;
+        font-weight: 700;
+        letter-spacing: 0.05em;
+        background: linear-gradient(135deg, #00d4ff 0%, #7c3aed 100%);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        line-height: 1.2;
+    }
+    .main-header .title-block .sub-title {
+        font-size: 0.7rem;
+        color: #4a6380;
+        letter-spacing: 0.12em;
+        text-transform: uppercase;
+        margin-top: 3px;
+        font-family: 'JetBrains Mono', monospace;
+    }
+
+    /* ── TABS ── */
+    .stTabs [data-baseweb="tab-list"] {
+        gap: 3px;
+        background: #0a0d1f;
+        border-radius: 10px;
+        padding: 4px;
+        border: 1px solid #1c2333;
+    }
     .stTabs [data-baseweb="tab"] {
-        background: #0f1729;
-        border: 1px solid #1a2540;
-        border-radius: 6px 6px 0 0;
-        padding: 8px 16px;
+        background: transparent;
+        border: none !important;
+        border-radius: 7px !important;
+        padding: 7px 14px !important;
+        font-size: 0.78rem !important;
+        font-weight: 500 !important;
+        color: #64748b !important;
+        transition: all 0.2s !important;
+    }
+    .stTabs [data-baseweb="tab"]:hover {
+        background: rgba(0, 212, 255, 0.07) !important;
+        color: #94a3b8 !important;
     }
     .stTabs [aria-selected="true"] {
-        background: #131d36 !important;
-        border-bottom: 2px solid #22d3ee !important;
+        background: linear-gradient(135deg, #0d2040 0%, #0f2550 100%) !important;
+        color: #00d4ff !important;
+        border: 1px solid rgba(0,212,255,0.25) !important;
+        box-shadow: 0 0 12px rgba(0,212,255,0.15) !important;
+        font-weight: 600 !important;
     }
+
+    /* ── ALERT BANNER ── */
     .alert-banner {
-        background: linear-gradient(90deg, #7f1d1d 0%, #991b1b 100%);
-        border: 1px solid #ef4444;
+        background: linear-gradient(90deg, rgba(127,29,29,0.8) 0%, rgba(153,27,27,0.8) 100%);
+        border: 1px solid rgba(239,68,68,0.5);
+        border-left: 4px solid #ef4444;
         border-radius: 8px;
         padding: 12px 20px;
         margin-bottom: 12px;
         color: #fca5a5;
         font-weight: 600;
+        font-size: 0.85rem;
+        letter-spacing: 0.02em;
+        backdrop-filter: blur(4px);
     }
+
+    /* ── LEDGER CARDS ── */
     .ledger-gold {
-        background: linear-gradient(135deg, #78350f 0%, #92400e 100%) !important;
-        border-left: 4px solid #f59e0b !important;
+        background: linear-gradient(135deg, rgba(120,53,15,0.5) 0%, rgba(146,64,14,0.5) 100%) !important;
+        border: 1px solid rgba(245,158,11,0.3) !important;
+        border-left: 3px solid #f59e0b !important;
         border-radius: 8px;
-        padding: 12px 16px;
-        margin-bottom: 8px;
+        padding: 10px 14px;
+        margin-bottom: 6px;
     }
     .ledger-red {
-        background: linear-gradient(135deg, #7f1d1d 0%, #991b1b 100%) !important;
-        border-left: 4px solid #ef4444 !important;
+        background: linear-gradient(135deg, rgba(127,29,29,0.5) 0%, rgba(153,27,27,0.5) 100%) !important;
+        border: 1px solid rgba(239,68,68,0.3) !important;
+        border-left: 3px solid #ef4444 !important;
         border-radius: 8px;
-        padding: 12px 16px;
-        margin-bottom: 8px;
+        padding: 10px 14px;
+        margin-bottom: 6px;
     }
     .ledger-default {
-        background: #0f1729;
-        border-left: 4px solid #334155;
+        background: rgba(13,17,27,0.8);
+        border: 1px solid #1c2333;
+        border-left: 3px solid #334155;
         border-radius: 8px;
-        padding: 12px 16px;
-        margin-bottom: 8px;
+        padding: 10px 14px;
+        margin-bottom: 6px;
     }
-    .emergency-btn button {
-        background: linear-gradient(135deg, #dc2626, #b91c1c) !important;
-        color: white !important;
-        font-size: 1.1rem !important;
-        font-weight: 700 !important;
-        padding: 16px !important;
-        border: 2px solid #ef4444 !important;
-        border-radius: 12px !important;
-    }
+
+    /* ── TOKEN GAUGE ── */
     .token-gauge-bg {
-        background: #1a2540;
-        border-radius: 8px;
-        height: 28px;
+        background: #0d1117;
+        border: 1px solid #1c2333;
+        border-radius: 6px;
+        height: 26px;
         overflow: hidden;
         margin-bottom: 4px;
     }
     .token-gauge-fill {
         height: 100%;
-        border-radius: 8px;
-        transition: width 0.3s;
+        border-radius: 6px;
+        transition: width 0.5s cubic-bezier(0.4,0,0.2,1);
         display: flex;
         align-items: center;
         justify-content: center;
-        font-size: 0.75rem;
-        font-weight: 600;
+        font-size: 0.72rem;
+        font-weight: 700;
         color: white;
+        font-family: 'JetBrains Mono', monospace;
+        letter-spacing: 0.05em;
     }
+
+    /* ── EXPANDERS ── */
+    div[data-testid="stExpander"] {
+        background: #0d1117;
+        border: 1px solid #1c2333 !important;
+        border-radius: 8px;
+    }
+    div[data-testid="stExpander"] summary {
+        font-size: 0.82rem !important;
+        font-weight: 600;
+        color: #94a3b8;
+    }
+
+    /* ── SECTION DIVIDERS ── */
+    .section-header {
+        font-size: 0.68rem;
+        font-weight: 700;
+        letter-spacing: 0.15em;
+        text-transform: uppercase;
+        color: #00d4ff;
+        padding: 4px 0 6px;
+        border-bottom: 1px solid rgba(0,212,255,0.15);
+        margin-bottom: 10px;
+    }
+
+    /* ── STAT PILL ── */
+    .stat-pill {
+        display: inline-flex;
+        align-items: center;
+        gap: 5px;
+        background: rgba(0,212,255,0.06);
+        border: 1px solid rgba(0,212,255,0.15);
+        border-radius: 20px;
+        padding: 2px 10px;
+        font-size: 0.68rem;
+        color: #94a3b8;
+        font-family: 'JetBrains Mono', monospace;
+    }
+
+    /* ── SCROLLBAR ── */
+    ::-webkit-scrollbar { width: 5px; height: 5px; }
+    ::-webkit-scrollbar-track { background: #060810; }
+    ::-webkit-scrollbar-thumb { background: #1c2d4a; border-radius: 3px; }
+    ::-webkit-scrollbar-thumb:hover { background: #00d4ff; }
+
+    /* ── INPUTS & SELECTS ── */
+    [data-testid="stTextInput"] input,
+    [data-testid="stNumberInput"] input,
+    [data-testid="stSelectbox"] div[data-baseweb="select"] {
+        background: #0d1117 !important;
+        border-color: #1c2333 !important;
+        color: #e2e8f0 !important;
+        border-radius: 7px !important;
+    }
+    [data-testid="stSlider"] [data-baseweb="slider"] div[role="slider"] {
+        background: #00d4ff !important;
+    }
+
+    /* ── BUTTONS ── */
+    [data-testid="baseButton-primary"] {
+        background: linear-gradient(135deg, #0369a1 0%, #0284c7 100%) !important;
+        border: 1px solid rgba(0,212,255,0.3) !important;
+        border-radius: 7px !important;
+        font-weight: 600 !important;
+        letter-spacing: 0.04em !important;
+        box-shadow: 0 0 15px rgba(0,212,255,0.15) !important;
+    }
+    [data-testid="baseButton-primary"]:hover {
+        box-shadow: 0 0 20px rgba(0,212,255,0.3) !important;
+        border-color: rgba(0,212,255,0.5) !important;
+    }
+    [data-testid="baseButton-secondary"] {
+        background: #0d1117 !important;
+        border: 1px solid #1c2333 !important;
+        border-radius: 7px !important;
+        color: #94a3b8 !important;
+        font-weight: 500 !important;
+    }
+
+    /* ── LOGIN PAGE ── */
+    .login-card {
+        background: linear-gradient(135deg, #0d1117 0%, #111827 100%);
+        border: 1px solid #1c2d4a;
+        border-radius: 16px;
+        padding: 40px 36px;
+        box-shadow: 0 0 60px rgba(0,212,255,0.08), 0 25px 50px rgba(0,0,0,0.5);
+    }
+    .login-logo {
+        text-align: center;
+        font-size: 3.5rem;
+        filter: drop-shadow(0 0 20px rgba(0,212,255,0.5));
+        margin-bottom: 8px;
+    }
+    .login-title {
+        text-align: center;
+        font-size: 1.1rem;
+        font-weight: 700;
+        letter-spacing: 0.12em;
+        text-transform: uppercase;
+        background: linear-gradient(135deg, #00d4ff 0%, #7c3aed 100%);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        margin-bottom: 4px;
+    }
+    .login-sub {
+        text-align: center;
+        font-size: 0.68rem;
+        color: #4a6380;
+        letter-spacing: 0.1em;
+        text-transform: uppercase;
+        margin-bottom: 28px;
+    }
+
+    /* ── RESPONSIVE ── */
     @media (max-width: 768px) {
         .block-container { padding-left: 0.5rem; padding-right: 0.5rem; }
-        [data-testid="stMetric"] { padding: 6px 8px; }
-        [data-testid="stMetric"] label { font-size: 0.65rem !important; }
-        [data-testid="stMetric"] [data-testid="stMetricValue"] { font-size: 0.9rem !important; }
-        .stTabs [data-baseweb="tab"] { padding: 6px 8px; font-size: 0.7rem; }
-        .stTabs [data-baseweb="tab-list"] { gap: 2px; flex-wrap: wrap; }
-        [data-testid="stSidebar"] { min-width: 180px; max-width: 240px; }
-        [data-testid="stSidebar"][aria-expanded="false"] { display: none; }
-        [data-testid="stHorizontalBlock"] { flex-wrap: wrap; }
-        [data-testid="stHorizontalBlock"] > div { flex: 1 1 100% !important; min-width: 100% !important; }
-        .emergency-btn button { font-size: 1.3rem !important; padding: 22px !important; min-height: 64px; width: 100% !important; }
-        .js-plotly-plot, .plotly { width: 100% !important; }
-        h1 { font-size: 1.3rem !important; }
-        h2 { font-size: 1.1rem !important; }
-        h3 { font-size: 1rem !important; }
-        .ledger-gold, .ledger-red, .ledger-default { padding: 8px 10px; font-size: 0.85rem; }
-        [data-testid="stNumberInput"] { width: 100% !important; }
-        [data-testid="stExpander"] { font-size: 0.85rem; }
+        [data-testid="stMetric"] { padding: 8px 10px; }
+        [data-testid="stMetricValue"] { font-size: 1rem !important; }
+        .stTabs [data-baseweb="tab"] { padding: 5px 8px !important; font-size: 0.68rem !important; }
+        [data-testid="stSidebar"] { min-width: 200px; max-width: 260px; }
+        .main-header .main-title { font-size: 1.1rem; }
+        h1 { font-size: 1.2rem !important; }
+        h2 { font-size: 1rem !important; }
+        h3 { font-size: 0.9rem !important; }
     }
 </style>""", unsafe_allow_html=True)
 
@@ -185,20 +472,22 @@ if DASH_USER or DASH_PASS:
         st.session_state.authenticated = False
 
     if not st.session_state.authenticated:
-        st.markdown("## ⚗️ Alchemical Trading Command Center")
-        st.markdown("---")
-        login_col1, login_col2, login_col3 = st.columns([1, 1.5, 1])
-        with login_col2:
-            st.markdown("### Operator Login")
-            login_user = st.text_input("Username", key="login_user")
-            login_pass = st.text_input("Password", type="password", key="login_pass")
-            if st.button("Login", use_container_width=True, type="primary"):
+        _, login_col, _ = st.columns([1, 1.4, 1])
+        with login_col:
+            st.markdown('<div class="login-card">', unsafe_allow_html=True)
+            st.markdown('<div class="login-logo">⚗️</div>', unsafe_allow_html=True)
+            st.markdown('<div class="login-title">Alchemical Trading</div>', unsafe_allow_html=True)
+            st.markdown('<div class="login-sub">Command Center · Operator Access</div>', unsafe_allow_html=True)
+            login_user = st.text_input("Username", key="login_user", placeholder="operator")
+            login_pass = st.text_input("Password", type="password", key="login_pass", placeholder="••••••••")
+            if st.button("ACCESS TERMINAL", use_container_width=True, type="primary"):
                 if login_user == DASH_USER and login_pass == DASH_PASS:
                     st.session_state.authenticated = True
                     log_event("auth", "Operator logged in", "info")
                     st.rerun()
                 else:
-                    st.error("Invalid credentials")
+                    st.error("Access denied — invalid credentials")
+            st.markdown('</div>', unsafe_allow_html=True)
         st.stop()
 
 if "broker" not in st.session_state:
@@ -243,17 +532,22 @@ update_agent_heartbeat(
 )
 
 with st.sidebar:
-    st.markdown("## ⚗️ Alchemical Command")
-    st.markdown("---")
+    st.markdown("""
+    <div class="sidebar-brand">
+        <div class="brand-icon">⚗️</div>
+        <div class="brand-name">Alchemy</div>
+        <div class="brand-sub">Trading Command Center</div>
+    </div>
+    """, unsafe_allow_html=True)
 
     if risk.kill_switch_active:
-        st.error("⛔ EMERGENCY STOP ACTIVE")
-        if st.button("▶ Resume Trading", use_container_width=True, type="secondary"):
+        st.markdown('<div style="text-align:center;margin-bottom:10px"><span class="status-killed">⬛ EMERGENCY STOP ACTIVE</span></div>', unsafe_allow_html=True)
+        if st.button("▶ RESUME TRADING", use_container_width=True, type="secondary"):
             risk.deactivate_kill_switch()
             log_event("system", "Trading resumed by operator", "info")
             st.rerun()
     else:
-        st.success("✅ System Online")
+        st.markdown('<div style="text-align:center;margin-bottom:10px"><span class="status-online">SYSTEM ONLINE</span></div>', unsafe_allow_html=True)
         st.markdown('<div class="emergency-btn">', unsafe_allow_html=True)
         if st.button("🚨 EMERGENCY STOP", use_container_width=True, type="primary"):
             log_event("system", "EMERGENCY STOP activated by operator", "warning")
@@ -282,7 +576,7 @@ with st.sidebar:
         st.markdown('</div>', unsafe_allow_html=True)
 
     st.markdown("---")
-    st.markdown("### Watchlist")
+    st.markdown('<div class="section-header">Watchlist</div>', unsafe_allow_html=True)
     symbols_input = st.text_input("Symbols (comma-separated)", value=",".join(DEFAULT_SYMBOLS))
     symbols = [s.strip().upper() for s in symbols_input.split(",") if s.strip()]
     selected_symbol = st.selectbox("Active Symbol", symbols)
@@ -296,7 +590,7 @@ with st.sidebar:
     bars_count = st.slider("Bars to Display", 60, 500, 200)
 
     st.markdown("---")
-    st.markdown("### Chart Indicators")
+    st.markdown('<div class="section-header">Chart Indicators</div>', unsafe_allow_html=True)
     show_bb = st.toggle("Bollinger Bands (20, 2σ)", value=True)
     show_ema9 = st.toggle("EMA 9 — Short", value=True)
     show_ema50 = st.toggle("EMA 50 — Medium", value=True)
@@ -307,7 +601,7 @@ with st.sidebar:
     show_macd = st.toggle("MACD (12/26/9)", value=True)
 
     st.markdown("---")
-    st.markdown("### Manual Levels")
+    st.markdown('<div class="section-header">Manual Levels</div>', unsafe_allow_html=True)
     support = st.number_input(
         f"Support ({selected_symbol})",
         value=float(st.session_state.support_levels.get(selected_symbol) or 0.0),
@@ -322,7 +616,7 @@ with st.sidebar:
     st.session_state.ceiling_levels[selected_symbol] = ceiling if ceiling > 0 else None
 
     st.markdown("---")
-    st.markdown("### Risk Parameters")
+    st.markdown('<div class="section-header">Risk Parameters</div>', unsafe_allow_html=True)
     new_risk_pct = st.slider("Max Risk per Trade (%)", 0.5, 5.0, float(risk.max_risk_pct * 100), 0.25)
     risk.max_risk_pct = new_risk_pct / 100
     new_atr_mult = st.slider("ATR Stop Multiplier", 0.5, 4.0, float(risk.atr_multiplier), 0.25)
@@ -334,8 +628,17 @@ with st.sidebar:
     auto_trade = st.toggle("Auto-Execute Trades", value=False)
     min_confidence = st.slider("Min Confidence to Trade", 0.5, 0.95, 0.75, 0.05)
 
-st.title("⚗️ Alchemical Trading Command Center")
-st.caption(f"Claude Brain · Alpaca Markets · {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}")
+st.markdown(f"""
+<div class="main-header">
+    <div class="title-block">
+        <div class="main-title">⚗️ &nbsp;ALCHEMICAL TRADING COMMAND CENTER</div>
+        <div class="sub-title">Claude Brain · Alpaca Markets · {datetime.now().strftime('%Y-%m-%d  %H:%M:%S UTC')}</div>
+    </div>
+    <div>
+        <span class="stat-pill">v2.0 · Ray Dalio Protocol</span>
+    </div>
+</div>
+""", unsafe_allow_html=True)
 
 recent_errors = get_error_events(5)
 broker_errors = [e for e in recent_errors if e.event_type == "broker" and e.severity == "error"]
