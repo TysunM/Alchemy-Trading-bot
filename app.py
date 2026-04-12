@@ -456,18 +456,6 @@ with tab1:
     with main_col:
         if fig:
             st.plotly_chart(fig, config=PLOTLY_CONFIG, use_container_width=True)
-                elif action == "detected" and prices:
-                    st.session_state["_detected_ann_prices"] = list(dict.fromkeys(float(p) for p in prices))
-
-            pending_prices = st.session_state.get("_detected_ann_prices", [])
-            if pending_prices:
-                st.caption(f"Detected {len(pending_prices)} drawn line(s): {', '.join(f'${p:.2f}' for p in pending_prices)}")
-
-            st.selectbox(
-                "Drawn annotation type",
-                options=["support", "ceiling", "trendline", "custom"],
-                key="drawn_ann_type",
-            )
 
         st.markdown("**Manual Annotation**")
         ann_btn_col, ann_type_col, ann_price_col = st.columns([1, 1, 1])
