@@ -42,9 +42,9 @@ _token_lock = threading.Lock()
 _total_tokens: int = 0
 
 
-def get_token_usage() -> int:
+def get_token_usage() -> dict:
     with _token_lock:
-        return _total_tokens
+        return {"total_tokens": _total_tokens}
 
 
 def reset_token_usage():
