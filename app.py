@@ -311,12 +311,12 @@ with st.sidebar:
     st.markdown("### Manual Levels")
     support = st.number_input(
         f"Support ({selected_symbol})",
-        value=float(st.session_state.support_levels.get(selected_symbol, 0.0)),
+        value=float(st.session_state.support_levels.get(selected_symbol) or 0.0),
         format="%.2f",
     )
     ceiling = st.number_input(
         f"Ceiling ({selected_symbol})",
-        value=float(st.session_state.ceiling_levels.get(selected_symbol, 0.0)),
+        value=float(st.session_state.ceiling_levels.get(selected_symbol) or 0.0),
         format="%.2f",
     )
     st.session_state.support_levels[selected_symbol] = support if support > 0 else None
