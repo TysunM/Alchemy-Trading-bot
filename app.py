@@ -34,7 +34,6 @@ from trading.ui.charts import (
     fetch_yfinance,
     get_indicator_summary,
 )
-from trading.ui.plotly_capture import plotly_chart_with_capture
 from trading.utils.config import DEFAULT_SYMBOLS, DASH_USER, DASH_PASS
 from trading.services.broker import get_active_annotations
 from trading.utils.database import (
@@ -456,27 +455,7 @@ with tab1:
 
     with main_col:
         if fig:
-            shape_data = plotly_chart_with_capture(
-                figure=fig,
-                config=PLOTLY_CONFIG,
-                height=740,
-                key="main_chart_capture",
-            )
-
-            if shape_data and isinstance(shape_data, dict):
-                action = shape_data.get("action")
-                prices = shape_data.get("prices", [])
-                if action == "save" and prices:
-                    unique_prices = list(dict.fromkeys(float(p) for p in prices))
-                    ann_type = st.session_state.get("drawn_ann_type", "support")
-                    for p in unique_prices:
-                        save_annotation(
-                            symbol=selected_symbol,
-                            price_level=p,
-                            annotation_type=ann_type,
-                        )
-                    st.success(f"Saved {len(unique_prices)} annotation(s) from drawn lines")
-                    st.rerun()
+            st.plotly_chart(fig, config=PLOTLY_CONFIG, use_container_width=True)
                 elif action == "detected" and prices:
                     st.session_state["_detected_ann_prices"] = list(dict.fromkeys(float(p) for p in prices))
 
