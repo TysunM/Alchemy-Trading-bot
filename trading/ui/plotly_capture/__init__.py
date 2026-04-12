@@ -8,17 +8,29 @@ _plotly_capture = components.declare_component("plotly_capture", path=_COMPONENT
 
 
 def _make_serializable(obj):
-    """Recursively convert numpy/non-JSON-serializable types to native Python."""
+    """Recursively convert numpy/pandas/non-JSON-serializable types to native Python."""
     try:
         import numpy as np
         if isinstance(obj, np.ndarray):
             return obj.tolist()
-        if isinstance(obj, (np.integer,)):
+        if isinstance(obj, np.integer):
             return int(obj)
-        if isinstance(obj, (np.floating,)):
+        if isinstance(obj, np.floating):
             return float(obj)
+        if isinstance(obj, np.bool_):
+            return bool(obj)
     except ImportError:
         pass
+    try:
+        import pandas as pd
+        if isinstance(obj, pd.Timestamp):
+            return obj.isoformat()
+        if isinstance(obj, pd.Series):
+            return obj.tolist()
+    except ImportError:
+        pass
+    if hasattr(obj, "isoformat"):
+        return obj.isoformat()
     if isinstance(obj, dict):
         return {k: _make_serializable(v) for k, v in obj.items()}
     if isinstance(obj, (list, tuple)):
