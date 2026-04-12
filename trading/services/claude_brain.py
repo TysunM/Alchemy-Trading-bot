@@ -40,23 +40,33 @@ _MODEL = "claude-sonnet-4-6"
 # ------------------------------------------------------------------ #
 _token_lock = threading.Lock()
 _total_tokens: int = 0
+_input_tokens: int = 0
+_output_tokens: int = 0
 
 
 def get_token_usage() -> dict:
     with _token_lock:
-        return {"total_tokens": _total_tokens}
+        return {
+            "total_tokens": _total_tokens,
+            "input_tokens": _input_tokens,
+            "output_tokens": _output_tokens,
+        }
 
 
 def reset_token_usage():
-    global _total_tokens
+    global _total_tokens, _input_tokens, _output_tokens
     with _token_lock:
         _total_tokens = 0
+        _input_tokens = 0
+        _output_tokens = 0
 
 
-def _add_tokens(n: int):
-    global _total_tokens
+def _add_tokens(n: int, input_n: int = 0, output_n: int = 0):
+    global _total_tokens, _input_tokens, _output_tokens
     with _token_lock:
         _total_tokens += n
+        _input_tokens += input_n
+        _output_tokens += output_n
 
 
 # ------------------------------------------------------------------ #
